@@ -112,6 +112,21 @@ export const useFetch = url => {
 - useFetch를 사용해 강아지 이미지를 랜덤으로 로드.
 
 ---
+### 설치 및 실행
+### 1. 프로젝트 생성
+```bash
+expo init react-native-hooks
+```
+
+### 2. 패키지 설치
+```bash
+npm install styled-components
+```
+### 3. 앱 실행
+```bash
+npm start
+```
+---
 ### 참고 자료
 - 처음 배우는 리액트 네이티브(한빛미디어) 6장
 ---
