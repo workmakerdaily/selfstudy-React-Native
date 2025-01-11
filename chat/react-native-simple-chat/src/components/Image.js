@@ -11,12 +11,13 @@ const StyledImage = styled.Image`
     background-color: ${({ theme }) => theme.imageBackground};
     width: 100px;
     height: 100px;
+    border-radius: ${({ rounded }) => (rounded ? 50 : 0)}px;
 `;
 
-const Image = ({ url, imageStyle }) => {
+const Image = ({ url, imageStyle, rounded }) => {
     return (
         <Container>
-            <StyledImage source={{ uri: url }} style={imageStyle} />
+            <StyledImage source={{ uri: url }} style={imageStyle} rounded={rounded} />
         </Container>
     );
 };
@@ -24,6 +25,7 @@ const Image = ({ url, imageStyle }) => {
 Image.propTypes = {
     uri: PropTypes.string,
     imageStyle: PropTypes.object,
+    rounded: PropTypes.bool,
 };
 
 export default Image;
