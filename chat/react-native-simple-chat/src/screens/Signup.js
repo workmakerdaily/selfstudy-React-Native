@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import styled from "styled-components/native";
 import { Text } from "react-native";
 import { removeWhitespace, validateEmail } from "../utils/common";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Image, Input, Button } from "../components";
 import { images } from "../utils/images";
+import { Alert } from "react-native";
+import { signup } from "../utils/firebase";
+import { ProgressContext, UserContext } from "../contexts";
 
 const Container = styled.View`
     flex: 1;
@@ -24,6 +27,10 @@ const ErrorText = styled.Text`
 `;
 
 const Signup = () => {
+
+    const { dispatch } = useContext(UserContext);
+
+    const { spinner } = useContext(ProgressContext);
 
     const [photoUrl, setPhotoUrl] = useState(images.photo);
     const [name, setName] = useState('');
@@ -65,12 +72,27 @@ const Signup = () => {
         );
     }, [name, email, password, passwordConfirm, errorMessage]);
 
-    const _handleSignupButtonPress = () => { };
+    const _handleSignupButtonPress = async () => {
+        try {
+            spinner.start();
+            const user = await signup({ email, password, name, photoUrl});
+            dispatch(user);
+        } catch (e) {
+            Alert.alert('Signup Error', e.message);
+        } finally {
+            spinner.stop();
+        }
+    };
 
     return (
         <KeyboardAwareScrollView extraScrollHeight={20}>
             <Container>
-                <Image rounded url={photoUrl} />
+                <Image 
+                rounded 
+                url={photoUrl} 
+                showButton
+                onChangeImage={url => setPhotoUrl(url)}
+                />
                 <Input
                     label="Name"
                     value={name}
@@ -100,6 +122,7 @@ const Signup = () => {
                     onSubmitEditing={() => passwordConfirmRef.current.focus()}
                     placeholder="Password"
                     returnKeyType="done"
+                    isPassword
                 />
                 <Input
                     ref={passwordConfirmRef}
@@ -109,6 +132,7 @@ const Signup = () => {
                     onSubmitEditing={_handleSignupButtonPress}
                     placeholder="Password"
                     returnKeyType="done"
+                    isPassword
                 />
                 <ErrorText>{errorMessage}</ErrorText>
                 <Button
